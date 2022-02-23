@@ -1,0 +1,28 @@
+name: "Get previous tag"
+description: "Get the previous git-tag. The result can be filtered with a tag pattern."
+branding:
+  icon: "tag"
+  color: "yellow"
+
+inputs:
+  prefix:
+    description: "Prefix of the tag"
+    required: false
+  suffix:
+    description: "Suffix of the tag"
+    required: false
+
+outputs:
+  previous-tag:
+    description: "The previous tag"
+    value: ${{ steps.previous_tag.outputs.result }}
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        FOUND_TAG=$(git tag -l "${{ inputs.prefix }}*${{ inputs.suffix }}" | sort -V --reverse | sed -n 2p)
+        echo "::set-output name=result::$(echo "${FOUND_TAG}")"
+        [[ -z $(echo "$FOUND_TAG") ]] && echo "No tag found..." || echo "Tag found: ${FOUND_TAG}"
+      id: previous_tag
+      shell: bash
