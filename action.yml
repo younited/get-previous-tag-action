@@ -19,7 +19,7 @@ runs:
   steps:
     - run: |
         FOUND_TAG=$(git tag -l "${{ inputs.match }}" | sort -V --reverse | sed -n 2p)
-        echo "::set-output name=result::$(echo "${FOUND_TAG}")"
+        echo "result=$(echo "${FOUND_TAG}")" >>"$GITHUB_OUTPUT"
         [[ -z $(echo "$FOUND_TAG") ]] && echo "No tag found..." || echo "Tag found: ${FOUND_TAG}"
       id: previous_tag
       shell: bash
